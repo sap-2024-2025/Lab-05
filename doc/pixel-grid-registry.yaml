@@ -1,0 +1,109 @@
+openapi: 3.0.3
+info:
+  title: Pixel Grid Registry 
+  description: |-
+    This is the API of the Pixel Grid Registry microservice
+  # termsOfService: http://swagger.io/terms/
+  contact:
+    email: a.ricci@unibo.it
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+# externalDocs:
+#  description: Find out more about Swagger
+#  url: http://swagger.io
+servers:
+  # - url: https://petstore3.swagger.io/api/v3
+  - url: http://localhost:9000/api
+tags:
+  - name: grids
+    description: Operations about grids
+    # externalDocs:
+    #  description: Find out more
+    #  url: http://swagger.io
+paths:
+  /pixel-grids:
+    post:
+      tags:
+        - grids
+      summary: Register a new pixel grid
+      description: Register a new pixel grid
+      operationId: registerPixelGrid
+      parameters:
+        - name: gridId
+          in: query
+          description: The grid identidier
+          required: true
+          schema:
+            type: string
+        - name: gridAddress
+          in: query
+          description: URI of the grid service
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grid registered
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grid'
+        '400':
+          description: invalid parameter supplied
+        '500':
+          description: service internal error
+    get:
+      tags:
+        - grids
+      summary: Get registered grids
+      description: ''
+      operationId: getPixelGridsId
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /pixel-grids/{gridId}:
+    get:
+      tags:
+        - grids
+      summary: Lookup information about a pixel grid
+      description: ''
+      operationId: getPixelGridInfo
+      parameters:
+        - name: gridId
+          in: path
+          description: The grid identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: grid information
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grid'
+        '400':
+          description: invalid parameter supplied
+        '500':
+          description: service internal error
+components:
+  schemas:
+    Grid:
+      type: object
+      required:
+      - gridId
+      - gridAddress
+      properties:
+        gridId:
+          type: string
+        gridAddress:
+          type: string
+
