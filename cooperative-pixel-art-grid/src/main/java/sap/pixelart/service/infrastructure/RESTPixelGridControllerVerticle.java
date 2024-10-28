@@ -50,7 +50,6 @@ public class RESTPixelGridControllerVerticle extends AbstractVerticle implements
 		router.route(HttpMethod.POST, "/api/brushes/:brushId/change-color").handler(this::changeBrushColor);
 		router.route(HttpMethod.POST, "/api/brushes/:brushId/select-pixel").handler(this::selectPixel);
 		router.route(HttpMethod.GET, "/api/pixel-grid").handler(this::getPixelGridState);
-		router.route(HttpMethod.POST, "/api/pixel-grid/register").handler(this::registerGrid);
 		this.handleEventSubscription(server, "/api/pixel-grid/events");
 
 		/* start the server */
@@ -174,22 +173,6 @@ public class RESTPixelGridControllerVerticle extends AbstractVerticle implements
 			sendServiceError(context.response());
 		}
 	}
-	
-	protected void registerGrid(RoutingContext context) {
-		logger.log(Level.INFO, "Register grid request: " + context.currentRoute().getPath());
-		context.request().handler(buf -> {
-			JsonObject registryInfo = buf.toJsonObject();
-			String registryAddress = registryInfo.getString("registryAddress");
-			JsonObject reply = new JsonObject();
-			try {
-				pixelArtAPI.registerGrid(registryAddress);
-				sendReply(context.response(), reply);
-			} catch (Exception ex) {
-				sendServiceError(context.response());
-			}
-		});
-	}
-	
 	
 
 	/* Handling subscribers using web sockets */

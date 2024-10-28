@@ -16,13 +16,11 @@ public class PixelGridImpl implements PixelGridAPI {
 	private BrushManager brushManager;
 	private PixelGrid grid;
 	private int brushCounter;
-	private PixelGridRegistryAPI registry;
 
-	public PixelGridImpl(String pixelGridId, PixelGridRegistryAPI registry) {
+	public PixelGridImpl(String pixelGridId) {
 		brushCounter = 0;
 		brushManager = new BrushManager("bm");
 		grid = PixelGridFactory.getInstance().makePixelGrid(pixelGridId, 40, 40);
-		this.registry = registry;
 	}
 
 	@Override
@@ -96,9 +94,5 @@ public class PixelGridImpl implements PixelGridAPI {
 		grid.addPixelGridEventListener(l);
 	}
 
-	@Override
-	public void registerGrid(String registryAddress) throws Exception {
-		registry.registerPixelGrid(grid.getId(), registryAddress);
-	}
 
 }

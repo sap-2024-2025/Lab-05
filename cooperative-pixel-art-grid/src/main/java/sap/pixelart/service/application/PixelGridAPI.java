@@ -87,12 +87,4 @@ public interface PixelGridAPI  {
 	 */
 	void subscribePixelGridEvents(PixelGridEventObserver l);
 
-
-	/**
-	 * 
-	 * Register the grid to the registry
-	 * 
-	 * @param registryAddress
-	 */
-	void registerGrid(String registryAddress) throws Exception;
 }

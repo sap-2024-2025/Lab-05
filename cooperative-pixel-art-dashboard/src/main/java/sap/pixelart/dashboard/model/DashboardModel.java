@@ -5,13 +5,13 @@ import java.util.List;
 
 import io.vertx.core.json.*;
 
-public class PixelArtLocalModel {
+public class DashboardModel {
 	private int nRows;
 	private int nColumns;
 	private int[][] grid; 
-	private List<PixelArtLocalModelListener> listeners;
+	private List<DashboardModelListener> listeners;
 	
-	public PixelArtLocalModel(JsonObject initialState) {
+	public DashboardModel(JsonObject initialState) {
 		this.nRows = initialState.getInteger("numRows");
 		this.nColumns = initialState.getInteger("numColumns");;
 		grid = new int[nRows][nColumns];
@@ -29,7 +29,7 @@ public class PixelArtLocalModel {
 
 	public void set(final int x, final int y, final int color) {
 		grid[y][x] = color;
-		for (PixelArtLocalModelListener l: listeners) {
+		for (DashboardModelListener l: listeners) {
 			l.notifiedPixelChanged(x, y, color);
 		}
 	}
@@ -47,7 +47,7 @@ public class PixelArtLocalModel {
 		return this.nColumns;
 	}
 
-	public void addListener(PixelArtLocalModelListener l) {
+	public void addListener(DashboardModelListener l) {
 		listeners.add(l);
 	}
 }

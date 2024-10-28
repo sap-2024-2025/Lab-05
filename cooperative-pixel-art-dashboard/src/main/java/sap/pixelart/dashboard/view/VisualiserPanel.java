@@ -2,23 +2,26 @@ package sap.pixelart.dashboard.view;
 
 import javax.swing.*;
 
-import sap.pixelart.dashboard.model.PixelArtLocalModel;
+import sap.pixelart.dashboard.model.DashboardModel;
 
 import java.awt.*;
 
 public class VisualiserPanel extends JPanel {
     private static final int STROKE_SIZE = 1;
     private final BrushManager brushManager;
-    private final PixelArtLocalModel grid;
+    private DashboardModel grid;
     private final int w,h;
 
-    public VisualiserPanel(PixelArtLocalModel grid, BrushManager brushManager, int w, int h){
+    public VisualiserPanel(BrushManager brushManager, int w, int h){
         setSize(w,h);
-        this.grid = grid;
         this.w = w;
         this.h = h;
         this.brushManager = brushManager;
         this.setPreferredSize(new Dimension(w, h));
+    }
+
+    public void setGrid(DashboardModel grid) {
+    	this.grid = grid;
     }
 
     public void paint(Graphics g){

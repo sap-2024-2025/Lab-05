@@ -9,13 +9,11 @@ import sap.pixelart.service.infrastructure.*;
 public class PixelGrid {
 
 	private PixelGridImpl service;
-	private PixelGridRegistryAPI registry;
 	private RESTPixelGridController adapter;
 	private URL localAddress;
 	
 	public PixelGrid(String pixelGridId, URL localAddress) {
-    	registry = new PixelGridRegistryProxy(localAddress);
-    	service = new PixelGridImpl(pixelGridId, registry);
+    	service = new PixelGridImpl(pixelGridId);
     	this.localAddress = localAddress;
  	}
 	

@@ -8,31 +8,39 @@ import java.util.List;
 
 import javax.swing.*;
 
-import sap.pixelart.dashboard.model.PixelArtLocalModel;
-import sap.pixelart.dashboard.model.PixelArtLocalModelListener;
+import sap.pixelart.dashboard.model.DashboardModel;
+import sap.pixelart.dashboard.model.DashboardModelListener;
 
 
-public class DashboardView implements PixelArtLocalModelListener {
+public class DashboardView implements DashboardModelListener {
 
-	private final PixelArtLocalModel grid;
+	private final DashboardModel grid;
     private final DashboardFrame frame;
-    private final List<PixelGridEventListener> pixelListeners;
-	private final List<ColorChangeListener> colorChangeListeners;
+    private final List<DashboardViewListener> pixelGridListeners;
 
-    public DashboardView(PixelArtLocalModel grid, int w, int h){
+    public DashboardView(DashboardModel grid, int w, int h){
 		this.grid = grid;
 		this.frame = new DashboardFrame(w, h);   
-		pixelListeners = new ArrayList<>();
-		colorChangeListeners = new ArrayList<>();
+		pixelGridListeners = new ArrayList<>();
     }
 
+    public void displayBootingDialog() {
+    	BootDialog dialog = new BootDialog(frame);
+        SwingUtilities.invokeLater(() -> {
+        	dialog.setVisible(true);
+			pixelGridListeners.forEach(l -> l.selectedGridId(dialog.getGridId()));
+        });
+    }
+
+    public void setGrid(DashboardModel grid) {
+    	this.frame.setGrid(grid);
+    }
+    
     public void setLocalBrushColor(int color) {
     	frame.setLocalBrushColor(color);
     }
     
-    public void addPixelGridEventListener(PixelGridEventListener l) { pixelListeners.add(l); }
-
-	public void addColorChangedListener(ColorChangeListener l) { colorChangeListeners.add(l); }
+    public void addPixelGridEventListener(DashboardViewListener l) { pixelGridListeners.add(l); }
 
     public void refresh(){
         frame.refresh();
@@ -48,7 +56,9 @@ public class DashboardView implements PixelArtLocalModelListener {
 	}
 	
 	public class DashboardFrame extends JFrame {
+		
 	    private final VisualiserPanel panel;
+		private DashboardModel grid;
 	    private final int w, h;
 		private final List<MouseMovedListener> movedListener;
 		private BrushManager brushManager;
@@ -58,7 +68,7 @@ public class DashboardView implements PixelArtLocalModelListener {
 			this.w = w;
 			this.h = h;
 			movedListener = new ArrayList<>();
-	        setTitle(".:: PixelArt ::.");
+	        setTitle(".:: Cooperative PixelArt ::.");
 			setResizable(false);
 	        
 			brushManager = new BrushManager();
@@ -66,14 +76,14 @@ public class DashboardView implements PixelArtLocalModelListener {
 			brushManager.addBrush(localBrush);
 
 			
-			panel = new VisualiserPanel(grid, brushManager, w, h);
+			panel = new VisualiserPanel(brushManager, w, h);
 	        panel.addMouseListener(createMouseListener());
 			panel.addMouseMotionListener(createMotionListener());
 			var colorChangeButton = new JButton("Change color");
 			colorChangeButton.addActionListener(e -> {
 				var color = JColorChooser.showDialog(this, "Choose a color", Color.BLACK);
 				if (color != null) {
-					colorChangeListeners.forEach(l -> l.colorChanged(color.getRGB()));
+					pixelGridListeners.forEach(l -> l.colorChanged(color.getRGB()));
 				}
 			});
 			// add panel and a button to the button to change color
@@ -88,7 +98,12 @@ public class DashboardView implements PixelArtLocalModelListener {
 				refresh();
 			});
 		}
-			    
+	    
+	    public void setGrid(DashboardModel grid) {
+	    	this.grid = grid;
+	    	this.panel.setGrid(grid);
+	    }
+	    
 	    public void setLocalBrushColor(int color) {
 	    	localBrush.setColor(color);
 	    }
@@ -122,7 +137,7 @@ public class DashboardView implements PixelArtLocalModelListener {
 					int dy = h / grid.getNumRows();
 					int col = e.getX() / dx;
 					int row = e.getY() / dy;
-					pixelListeners.forEach(l -> l.selectedCell(col, row));
+					pixelGridListeners.forEach(l -> l.selectedCell(col, row));
 				}
 
 				@Override

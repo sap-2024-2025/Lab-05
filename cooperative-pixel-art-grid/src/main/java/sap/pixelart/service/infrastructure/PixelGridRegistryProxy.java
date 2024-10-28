@@ -19,23 +19,21 @@ public class PixelGridRegistryProxy implements PixelGridRegistryAPI {
 
     static Logger logger = Logger.getLogger("[Pixel Grid Registry Proxy]");	
 	private Vertx vertx;
-	private URL localAddress;
+	private URL registryAddress;
 	
-	public PixelGridRegistryProxy(URL localAddress) {
+	public PixelGridRegistryProxy(URL registryAddress) {
 		vertx = Vertx.vertx();
-		this.localAddress = localAddress;
+		this.registryAddress = registryAddress;
 	}
 	
-	
 	@Override
-	public void registerPixelGrid(String name, String registryAddress) throws Exception {
+	public void registerPixelGrid(String serviceName, String serviceAddress) throws Exception {
 		// TODO Auto-generated method stub
-		logger.log(Level.INFO,"Register Pixel Grid " + name);
+		logger.log(Level.INFO, "Register Pixel Grid " + serviceName);
 
-		var url = new URI(registryAddress).toURL();
 		HttpClientOptions options = new HttpClientOptions()
-				.setDefaultHost(url.getHost())
-				.setDefaultPort(url.getPort());
+				.setDefaultHost(registryAddress.getHost())
+				.setDefaultPort(registryAddress.getPort());
 		HttpClient client = vertx.createHttpClient(options);
 	
 		Promise<JsonObject> p = Promise.promise();
@@ -49,8 +47,8 @@ public class PixelGridRegistryProxy implements PixelGridRegistryAPI {
 				});
 			});
 			JsonObject body = new JsonObject();
-			body.put(GRID_ID, name);
-			body.put(GRID_ADDRESS, localAddress.toString());
+			body.put(GRID_ID, serviceName);
+			body.put(GRID_ADDRESS, serviceAddress);
 			req.send(body.encodePrettily());
 		})
 		.onFailure(f -> {

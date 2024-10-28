@@ -104,7 +104,7 @@ class PixelGridProxy implements PixelGridAsyncAPI {
 		.request(HttpMethod.GET, "/api/pixel-grid")
 		.onSuccess(req -> {
 			req.response().onSuccess(response -> {
-				System.out.println("Received response with status code " + response.statusCode());
+				// System.out.println("Received response with status code " + response.statusCode());
 				response.body().onSuccess(buf -> {
 					JsonObject obj = buf.toJsonObject().getJsonObject("pixelGrid");
 					p.complete(obj);

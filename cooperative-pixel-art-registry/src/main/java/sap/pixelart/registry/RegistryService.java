@@ -6,13 +6,13 @@ import sap.pixelart.registry.domain.PixelGridRegistry;
 import sap.pixelart.registry.domain.PixelGridRegistryAPI;
 import sap.pixelart.registry.infrastructure.RESTPixelGridRegistryController;
 
-public class PixelGridRegistryService {
+public class RegistryService {
 
 	private PixelGridRegistryAPI registry;
 	private RESTPixelGridRegistryController restBasedAdapter;
 	private URL localAddress;
 	
-	public PixelGridRegistryService(URL localAddress) {
+	public RegistryService(URL localAddress) {
 		registry = new PixelGridRegistry("reg");
     	this.localAddress = localAddress;
 	}
